@@ -1,70 +1,41 @@
 import topBetonLogo from "@assets/540506396_122095734507000096_8054366741086429791_n_1760016853766.jpg";
+import romaniaMap from "@assets/sticker-harta-romaniei-774-5516_1760018941341.jpg";
 
 export default function RomaniaMap() {
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <svg 
-        viewBox="0 0 400 500" 
-        className="w-full h-full max-h-[500px]" 
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Romania outline - simplified */}
-        <path
-          d="M 200 50 L 350 80 L 380 150 L 370 220 L 380 280 L 360 350 L 320 420 L 280 450 L 220 470 L 160 450 L 120 420 L 80 360 L 50 280 L 40 200 L 60 130 L 100 80 L 150 60 Z"
-          fill="hsl(215, 25%, 27%)"
-          fillOpacity="0.1"
-          stroke="hsl(215, 25%, 27%)"
-          strokeWidth="3"
-          className="transition-all duration-300"
-        />
+      {/* Romania Map Image */}
+      <img 
+        src={romaniaMap} 
+        alt="Harta României" 
+        className="w-full h-auto max-h-[500px] object-contain"
+      />
+      
+      {/* București marker with logo - positioned on the map */}
+      <div className="absolute" style={{ top: '58%', left: '52%', transform: 'translate(-50%, -50%)' }}>
+        {/* Pulsing circle animation */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-16 h-16 bg-accent/30 rounded-full animate-ping"></div>
+        </div>
         
-        {/* Bucharest marker position (roughly center-south) */}
-        <g transform="translate(200, 320)">
-          {/* Pulsing circle animation */}
-          <circle 
-            cx="0" 
-            cy="0" 
-            r="25" 
-            fill="hsl(38, 92%, 50%)"
-            opacity="0.3"
-            className="animate-ping"
-          />
-          
-          {/* Logo circle background */}
-          <circle 
-            cx="0" 
-            cy="0" 
-            r="20" 
-            fill="white"
-            stroke="hsl(38, 92%, 50%)"
-            strokeWidth="3"
-          />
-          
-          {/* Logo image */}
-          <image
-            href={topBetonLogo}
-            x="-15"
-            y="-15"
-            width="30"
-            height="30"
-            clipPath="circle(15px at center)"
-          />
-        </g>
+        {/* Logo circle background */}
+        <div className="relative flex items-center justify-center">
+          <div className="w-12 h-12 bg-white rounded-full border-4 border-accent flex items-center justify-center shadow-lg">
+            <img 
+              src={topBetonLogo} 
+              alt="Top Beton Logo" 
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          </div>
+        </div>
         
         {/* București label */}
-        <text 
-          x="200" 
-          y="370" 
-          textAnchor="middle" 
-          className="text-sm font-semibold fill-foreground"
-        >
-          București
-        </text>
-        
-        {/* Decorative coverage area indicators */}
-        <circle cx="200" cy="320" r="60" fill="none" stroke="hsl(38, 92%, 50%)" strokeWidth="1.5" strokeDasharray="5,5" opacity="0.4" />
-        <circle cx="200" cy="320" r="90" fill="none" stroke="hsl(38, 92%, 50%)" strokeWidth="1" strokeDasharray="5,5" opacity="0.2" />
-      </svg>
+        <div className="absolute top-14 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+          <span className="text-sm font-bold text-foreground bg-background/80 px-2 py-1 rounded">
+            București
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

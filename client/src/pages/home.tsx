@@ -70,7 +70,7 @@ export default function Home() {
       </section>
 
       {/* Coverage Area Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-[hsl(210,40%,98%)]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">Aria de acoperire</h2>
@@ -91,13 +91,15 @@ export default function Home() {
             <div className="order-1 lg:order-2">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {LOCALITATI.filter(loc => loc.featured).map((localitate) => (
-                  <div 
+                  <Card 
                     key={localitate.slug} 
-                    className="flex items-center space-x-2 text-foreground"
+                    className="card-hover"
                   >
-                    <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
-                    <span className="text-sm">{localitate.name}</span>
-                  </div>
+                    <CardContent className="p-3 flex items-center space-x-2">
+                      <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-sm text-foreground">{localitate.name}</span>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
               

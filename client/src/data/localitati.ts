@@ -43,7 +43,7 @@ export const LOCALITATI: Localitate[] = [
   { name: "Iepurești", slug: "iepuresti" },
   { name: "Roșu", slug: "rosu" },
   { name: "Chiajna", slug: "chiajna" },
-  { name: "Antiaeriană", slug: "antieeriana" },
+  { name: "Antiaeriană", slug: "antiaeriana" },
   { name: "Rahova", slug: "rahova" },
   { name: "Sălaj", slug: "salaj" },
   { name: "Militari", slug: "militari" },
