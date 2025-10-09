@@ -31,9 +31,12 @@ Preferred communication style: Simple, everyday language.
 **Key Features:**
 - Multi-page application with routes for home, products, equipment, mission/vision/values, career, news, contact, special offers, guarantees, partners, photo gallery, coverage area, and location-specific pages
 - Responsive design with mobile-first approach
+- Interactive Romania map with service coverage visualization on homepage
+- Coverage area section showcasing 24 featured localities with real Romania map image
+- Top Beton logo positioned on București with pulsing animation effect
 - Map integration using Leaflet for displaying service areas and location
 - Image lightbox functionality for photo galleries
-- Contact form (placeholder for EmailJS or Formspree integration)
+- Contact form with validation and toast notifications (placeholder for EmailJS or Formspree integration)
 
 ### Backend Architecture
 
@@ -99,4 +102,6 @@ Preferred communication style: Simple, everyday language.
 **Content Management:**
 - Static data files for products, guarantees, locations, and blog posts
 - Romanian language content throughout the application
-- Image placeholder system using Unsplash URLs
+- 48 localities served (24 featured on homepage, all 48 on dedicated page)
+- Real Romania map image with Top Beton logo marker on București
+- Image assets for logos and maps stored in attached_assets directory
