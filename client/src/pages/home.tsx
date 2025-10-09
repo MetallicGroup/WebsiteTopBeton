@@ -1,8 +1,10 @@
 import { Link } from "wouter";
-import { ArrowRight, Phone, Mail, Award, Users, Truck, CheckCircle } from "lucide-react";
+import { ArrowRight, Phone, Mail, Award, Users, Truck, CheckCircle, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { posts, type Post } from "@/data/posts";
+import { LOCALITATI } from "@/data/localitati";
+import RomaniaMap from "@/components/RomaniaMap";
 
 export default function Home() {
   return (
@@ -61,6 +63,55 @@ export default function Home() {
                   <p className="font-bold text-2xl">15+ ani</p>
                   <p className="text-sm">experiență</p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Coverage Area Section */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">Aria de acoperire</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Livrăm beton proaspăt în Ilfov și sudul Bucureștiului
+            </p>
+          </div>
+          
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Romania Map */}
+            <div className="order-2 lg:order-1">
+              <div className="bg-background rounded-2xl p-8 shadow-lg">
+                <RomaniaMap />
+              </div>
+            </div>
+            
+            {/* Cities List */}
+            <div className="order-1 lg:order-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {LOCALITATI.filter(loc => loc.featured).map((localitate) => (
+                  <div 
+                    key={localitate.slug} 
+                    className="flex items-center space-x-2 text-foreground"
+                  >
+                    <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
+                    <span className="text-sm">{localitate.name}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-8">
+                <Link href="/aria-de-acoperire">
+                  <Button 
+                    size="lg" 
+                    className="btn-primary w-full sm:w-auto"
+                    data-testid="button-view-all-coverage"
+                  >
+                    Vezi toată aria de acoperire
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
