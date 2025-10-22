@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { posts, type Post } from "@/data/posts";
 import { LOCALITATI } from "@/data/localitati";
 import RomaniaMap from "@/components/RomaniaMap";
+import irdProductCerts from "@assets/ird-certificates-products.png";
+import irdIsoCerts from "@assets/ird-certificates-iso.png";
 
 export default function Home() {
   return (
@@ -160,7 +162,7 @@ export default function Home() {
       </section>
 
       {/* Certifications Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-muted/10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">Calitate certificată</h2>
@@ -168,34 +170,56 @@ export default function Home() {
               Producție monitorizată în laborator autorizat; materiale cu declarații de performanță.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="card-hover">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Award className="w-8 h-8 text-accent" />
+          
+          {/* IRD Certificate Images */}
+          <div className="max-w-5xl mx-auto space-y-12">
+            {/* Product Certifications */}
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold text-center mb-6 text-foreground">Certificate pentru produse și standarde</h3>
+              <img 
+                src={irdProductCerts} 
+                alt="IRD CERTIFICARE - Certificate SR EN 206+A2:2021, NE 014:2002, STAS 10473-1:87" 
+                className="w-full h-auto"
+                data-testid="img-certificates-products"
+              />
+              <div className="grid md:grid-cols-3 gap-4 mt-6 text-center text-sm text-muted-foreground">
+                <div>
+                  <p className="font-semibold text-foreground">Certificat nr. 135P</p>
+                  <p>SR EN 206+A2:2021</p>
                 </div>
-                <CardTitle className="text-xl mb-2">RAD CERT</CardTitle>
-                <p className="text-muted-foreground">Certificare control producție</p>
-              </CardContent>
-            </Card>
-            <Card className="card-hover">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-accent" />
+                <div>
+                  <p className="font-semibold text-foreground">Certificat nr. 136P</p>
+                  <p>NE 014:2002</p>
                 </div>
-                <CardTitle className="text-xl mb-2">Laborator Autorizat</CardTitle>
-                <p className="text-muted-foreground">Control calitate continuu</p>
-              </CardContent>
-            </Card>
-            <Card className="card-hover">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Award className="w-8 h-8 text-accent" />
+                <div>
+                  <p className="font-semibold text-foreground">Certificat nr. 137P</p>
+                  <p>STAS 10473-1:87</p>
                 </div>
-                <CardTitle className="text-xl mb-2">Declarații CE</CardTitle>
-                <p className="text-muted-foreground">Materiale certificate</p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+
+            {/* ISO Certifications */}
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold text-center mb-6 text-foreground">Certificate ISO - Sisteme de management</h3>
+              <img 
+                src={irdIsoCerts} 
+                alt="IRD CERTIFICARE - ISO 9001:2015 și ISO 14001:2015" 
+                className="w-full h-auto max-w-2xl mx-auto"
+                data-testid="img-certificates-iso"
+              />
+              <div className="grid md:grid-cols-2 gap-8 mt-6 text-center text-sm text-muted-foreground max-w-2xl mx-auto">
+                <div>
+                  <p className="font-semibold text-foreground">ISO 9001:2015</p>
+                  <p>Certificat nr. 382C</p>
+                  <p className="text-xs mt-1">Sistem de management al calității</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground">ISO 14001:2015</p>
+                  <p>Certificat nr. 383M</p>
+                  <p className="text-xs mt-1">Sistem de management de mediu</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
