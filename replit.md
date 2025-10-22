@@ -20,7 +20,7 @@ Preferred communication style: Simple, everyday language.
 **UI Component System:**
 - Shadcn/ui component library (New York style) with Radix UI primitives
 - Tailwind CSS for styling with custom CSS variables for theming
-- Custom color scheme: neutral base with primary (dark blue-gray), accent (amber/gold), and secondary colors
+- Custom color scheme: industrial green primary (hsl 150 40% 38%), white backgrounds, bright yellow accents (hsl 45 95% 55%) for professional B2B construction aesthetic
 - Inter font family for consistent typography
 
 **State Management & Data Fetching:**
@@ -104,4 +104,15 @@ Preferred communication style: Simple, everyday language.
 - Romanian language content throughout the application
 - 48 localities served (24 featured on homepage, all 48 on dedicated page)
 - Real Romania map image with Top Beton logo marker on București
-- Image assets for logos and maps stored in attached_assets directory
+- Image assets for logos, maps, and certifications stored in attached_assets directory
+
+**Product Catalog:**
+- 9 structural concrete classes (C 8/10 to C 40/50) compliant with SR EN 206+A2:2021
+- 4 road concrete grades (BcR 3.5 to BcR 5) for infrastructure projects
+- 3 cement-stabilized aggregate options (4%, 5%, 6%) for road foundations
+- Organized into three distinct categories on products page
+
+**Certifications:**
+- IRD CERTIFICARE product certificates: 135P (SR EN 206+A2:2021), 136P (NE 014:2002), 137P (STAS 10473-1:87)
+- ISO management system certificates: 382C (ISO 9001:2015 Quality), 383M (ISO 14001:2015 Environmental)
+- Certificate images displayed on homepage in dedicated "Calitate certificată" section

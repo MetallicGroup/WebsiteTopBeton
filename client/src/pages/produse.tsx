@@ -1,8 +1,8 @@
-import { Package, Truck, UserCheck, Wrench } from "lucide-react";
+import { Package, Truck, UserCheck, Construction } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { standardProducts, specialProducts, type StandardProduct, type SpecialProduct } from "@/data/products";
+import { standardProducts, roadConcreteProducts, stabilizedAggregateProducts, type StandardProduct, type RoadConcreteProduct, type StabilizedAggregateProduct } from "@/data/products";
 
 export default function Produse() {
   return (
@@ -12,23 +12,26 @@ export default function Produse() {
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl font-bold mb-4">Produse</h1>
           <p className="text-xl max-w-3xl mx-auto">
-            Gama noastră acoperă betoane uzuale pentru fundații, grinzi, plăci, cât și soluții speciale la cerere.
+            Gama completă de betoane și agregate pentru orice tip de lucrare: structuri rezidențiale, comerciale, infrastructură rutieră și platforme industriale.
           </p>
         </div>
       </section>
 
-      {/* Standard Products */}
+      {/* Standard Concrete Products */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-foreground mb-8">Produse uzuale</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
+          <div className="mb-8">
+            <h2 className="text-4xl font-bold text-foreground mb-2">Betoane structurale</h2>
+            <p className="text-muted-foreground text-lg">Clase de rezistență conform SR EN 206+A2:2021</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {standardProducts.map((product: StandardProduct) => (
               <Card key={product.code} className="card-hover" data-testid={`card-product-${product.code.toLowerCase().replace(/\s+/g, '-')}`}>
                 <CardHeader>
-                  <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-4">
-                    <Package className="w-6 h-6 text-accent" />
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
+                    <Package className="w-6 h-6 text-primary" />
                   </div>
-                  <CardTitle className="text-lg font-mono">{product.code}</CardTitle>
+                  <CardTitle className="text-xl font-mono">{product.code}</CardTitle>
                   <p className="text-sm text-muted-foreground">({product.oldCode})</p>
                 </CardHeader>
                 <CardContent>
@@ -40,16 +43,44 @@ export default function Produse() {
         </div>
       </section>
 
-      {/* Special Products */}
-      <section className="py-20 bg-muted/30">
+      {/* Road Concrete Products */}
+      <section className="py-20 bg-muted/10">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-foreground mb-8">Produse speciale</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {specialProducts.map((product: SpecialProduct, index: number) => (
-              <Card key={index} className="card-hover border-2 border-accent/20" data-testid={`card-special-${product.name.toLowerCase().replace(/\s+/g, '-')}`}>
+          <div className="mb-8">
+            <h2 className="text-4xl font-bold text-foreground mb-2">Betoane rutiere</h2>
+            <p className="text-muted-foreground text-lg">Pentru infrastructură rutieră și platforme industriale</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {roadConcreteProducts.map((product: RoadConcreteProduct) => (
+              <Card key={product.code} className="card-hover border-2 border-primary/20" data-testid={`card-road-${product.code.toLowerCase().replace(/\s+/g, '-')}`}>
+                <CardHeader>
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
+                    <Truck className="w-6 h-6 text-primary" />
+                  </div>
+                  <CardTitle className="text-lg">{product.code}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground text-sm">{product.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stabilized Aggregates */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="mb-8">
+            <h2 className="text-4xl font-bold text-foreground mb-2">Agregate stabilizate cu ciment</h2>
+            <p className="text-muted-foreground text-lg">Pentru straturi de fundație rutieră și platforme</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {stabilizedAggregateProducts.map((product: StabilizedAggregateProduct, index: number) => (
+              <Card key={index} className="card-hover border-2 border-accent/20" data-testid={`card-aggregate-${product.name.toLowerCase().replace(/\s+/g, '-')}`}>
                 <CardHeader>
                   <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-4">
-                    <Package className="w-6 h-6 text-accent" />
+                    <Construction className="w-6 h-6 text-accent" />
                   </div>
                   <CardTitle className="text-lg">{product.name}</CardTitle>
                 </CardHeader>
@@ -63,7 +94,7 @@ export default function Produse() {
       </section>
 
       {/* Services */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-muted/10">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-foreground mb-8">Servicii complementare</h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
@@ -128,7 +159,6 @@ export default function Produse() {
               </p>
               <Link href="/contact">
                 <Button className="btn-primary" data-testid="button-contact-products">
-                  <Wrench className="w-4 h-4 mr-2" />
                   Solicită ofertă personalizată
                 </Button>
               </Link>
