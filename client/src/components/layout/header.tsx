@@ -11,13 +11,13 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-28">
           {/* Logo */}
           <Link href="/" data-testid="link-logo">
             <img 
               src={topBetonLogo} 
               alt="TOP BETON - Mergi pe calitate" 
-              className="h-24 w-auto"
+              className="h-32 w-auto"
             />
           </Link>
 

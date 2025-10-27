@@ -13,7 +13,7 @@ export default function Footer() {
               <img 
                 src={topBetonLogo} 
                 alt="TOP BETON - Mergi pe calitate" 
-                className="h-32 w-auto mb-4 brightness-0 invert"
+                className="h-40 w-auto mb-4 brightness-0 invert"
               />
             </div>
             <p className="text-primary-foreground/90 mb-4">
