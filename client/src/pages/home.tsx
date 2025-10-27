@@ -19,7 +19,7 @@ export default function Home() {
             <div className="animate-fade-in-up">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6">
                 <div>TOP BETON</div>
-                <div className="text-gradient inline-block" style={{ width: 'fit-content', letterSpacing: '0.15em' }}>mergi pe calitate</div>
+                <div className="text-gradient text-2xl sm:text-3xl lg:text-4xl xl:text-5xl whitespace-nowrap" style={{ letterSpacing: '0.35em' }}>mergi pe calitate</div>
               </h1>
               <p className="text-xl lg:text-2xl mb-8 text-primary-foreground/90 leading-relaxed">
                 Beton proaspăt, livrat rapid, cu pompă, pentru proiecte rezidențiale și comerciale în Ilfov și sudul Bucureștiului.
