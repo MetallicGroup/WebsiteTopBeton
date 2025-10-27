@@ -17,7 +17,7 @@ export default function Header() {
             <img 
               src={topBetonLogo} 
               alt="TOP BETON - Mergi pe calitate" 
-              className="h-16 w-auto"
+              className="h-24 w-auto"
             />
           </Link>
 
