@@ -16,13 +16,13 @@
   --secondary-foreground: hsl(0 0% 100%);
   --muted: hsl(0 0% 45%);
   --muted-foreground: hsl(0 0% 60%);
-  --accent: hsl(0 0% 50%);
+  --accent: hsl(0 0% 30%);
   --accent-foreground: hsl(0 0% 100%);
   --destructive: hsl(0 84% 60%);
   --destructive-foreground: hsl(0 0% 100%);
   --border: hsl(0 0% 82%);
   --input: hsl(0 0% 82%);
-  --ring: hsl(0 0% 50%);
+  --ring: hsl(0 0% 30%);
   --radius: 1rem;
 }
 
@@ -44,22 +44,22 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--accent) 0%, hsl(0 0% 60%) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, hsl(0 0% 40%) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent) 0%, hsl(0 0% 45%) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, hsl(0 0% 25%) 100%);
   color: var(--accent-foreground);
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, hsl(0 0% 55%) 0%, var(--accent) 100%);
+  background: linear-gradient(135deg, hsl(0 0% 35%) 0%, var(--accent) 100%);
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(128, 128, 128, 0.3);
+  box-shadow: 0 10px 25px -5px rgba(77, 77, 77, 0.4);
 }
 
 .card-hover {
