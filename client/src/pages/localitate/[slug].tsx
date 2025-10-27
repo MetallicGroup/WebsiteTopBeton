@@ -89,7 +89,7 @@ export default function LocalitateSlug() {
                     </h4>
                     <a 
                       href="tel:0752400200" 
-                      className="text-lg text-accent hover:text-accent/80 font-semibold"
+                      className="text-lg text-foreground hover:text-accent font-semibold"
                       data-testid="link-phone-location"
                     >
                       0752 400 200
@@ -102,7 +102,7 @@ export default function LocalitateSlug() {
                     </h4>
                     <a 
                       href="mailto:office@topbeton.ro" 
-                      className="text-lg text-accent hover:text-accent/80 font-semibold"
+                      className="text-lg text-foreground hover:text-accent font-semibold"
                       data-testid="link-email-location"
                     >
                       office@topbeton.ro
