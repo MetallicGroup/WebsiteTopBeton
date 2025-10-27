@@ -1,4 +1,5 @@
 import { useParams, Link } from "wouter";
+import { useEffect } from "react";
 import { ArrowLeft, MapPin, Phone, Mail, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,10 @@ import NotFound from "@/pages/not-found";
 export default function LocalitateSlug() {
   const { slug } = useParams();
   const localitate = LOCALITATI.find(l => l.slug === slug);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   if (!localitate) {
     return <NotFound />;
