@@ -94,15 +94,14 @@ export default function Home() {
             <div className="order-1 lg:order-2">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {LOCALITATI.filter(loc => loc.featured).map((localitate) => (
-                  <Card 
-                    key={localitate.slug} 
-                    className="card-hover"
-                  >
-                    <CardContent className="p-3 flex items-center space-x-2">
-                      <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
-                      <span className="text-sm text-foreground">{localitate.name}</span>
-                    </CardContent>
-                  </Card>
+                  <Link key={localitate.slug} href={`/localitati/${localitate.slug}`}>
+                    <Card className="card-hover cursor-pointer">
+                      <CardContent className="p-3 flex items-center space-x-2">
+                        <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
+                        <span className="text-sm text-foreground">{localitate.name}</span>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
               
