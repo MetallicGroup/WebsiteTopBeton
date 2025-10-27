@@ -11,7 +11,7 @@ export default function LocalitateSlug() {
   const localitate = LOCALITATI.find(l => l.slug === slug);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [slug]);
 
   if (!localitate) {
