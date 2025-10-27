@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import topBetonLogo from "@assets/top-beton-logo.png";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,14 +13,12 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-accent font-bold text-2xl">TB</span>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-foreground">Top Beton</h1>
-              <p className="text-xs text-muted-foreground">Mergi pe calitate</p>
-            </div>
+          <Link href="/" data-testid="link-logo">
+            <img 
+              src={topBetonLogo} 
+              alt="TOP BETON - Mergi pe calitate" 
+              className="h-16 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
