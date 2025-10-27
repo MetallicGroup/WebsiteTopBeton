@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import topBetonLogo from "@assets/top-beton-logo.png";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,15 +22,11 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" data-testid="link-logo">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-                  <span className="text-accent font-bold text-2xl">TB</span>
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-primary">Top Beton</h1>
-                  <p className="text-xs text-muted-foreground">Mergi pe calitate</p>
-                </div>
-              </div>
+              <img 
+                src={topBetonLogo} 
+                alt="TOP BETON - Mergi pe calitate" 
+                className="h-16 w-auto"
+              />
             </Link>
           </div>
 

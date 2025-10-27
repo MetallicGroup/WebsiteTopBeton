@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import topBetonLogo from "@assets/top-beton-logo.png";
 
 export default function Footer() {
   return (
@@ -7,14 +8,12 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Company Info */}
           <div>
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center">
-                <span className="text-accent-foreground font-bold text-2xl">TB</span>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold">Top Beton SRL</h3>
-                <p className="text-sm text-accent">Mergi pe calitate</p>
-              </div>
+            <div className="mb-6">
+              <img 
+                src={topBetonLogo} 
+                alt="TOP BETON - Mergi pe calitate" 
+                className="h-20 w-auto mb-4 brightness-0 invert"
+              />
             </div>
             <p className="text-primary-foreground/80 mb-4">
               Din 2008 livrăm beton de calitate pentru proiectele dumneavoastră.
