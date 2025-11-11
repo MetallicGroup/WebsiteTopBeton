@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
+import { useSubmitQuote } from "@/hooks/use-submit-quote";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Numele trebuie să aibă cel puțin 2 caractere"),
@@ -20,8 +20,7 @@ const contactFormSchema = z.object({
 type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export default function Contact() {
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitQuote = useSubmitQuote();
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -47,29 +46,20 @@ export default function Contact() {
   }, []);
 
   const onSubmit = async (data: ContactFormData) => {
-    setIsSubmitting(true);
+    await submitQuote.mutateAsync({
+      sourcePage: "/contact",
+      formType: "contact",
+      name: data.name,
+      email: data.email,
+      phone: data.phone || "",
+      message: data.message,
+      metadata: {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+      },
+    });
     
-    try {
-      // Here you would integrate with EmailJS or Formspree
-      // For now, we'll simulate the submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "Mulțumim!",
-        description: "Mesajul a fost trimis cu succes. Revenim în cel mai scurt timp.",
-        duration: 5000,
-      });
-      
-      form.reset();
-    } catch (error) {
-      toast({
-        title: "Eroare",
-        description: "A apărut o eroare la trimiterea mesajului. Vă rugăm să încercați din nou.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    form.reset();
   };
 
   return (
@@ -161,10 +151,10 @@ export default function Contact() {
                       <Button 
                         type="submit" 
                         className="btn-primary w-full" 
-                        disabled={isSubmitting}
+                        disabled={submitQuote.isPending}
                         data-testid="button-submit-contact"
                       >
-                        {isSubmitting ? "Se trimite..." : "Trimite mesajul"}
+                        {submitQuote.isPending ? "Se trimite..." : "Trimite mesajul"}
                       </Button>
                     </form>
                   </Form>
