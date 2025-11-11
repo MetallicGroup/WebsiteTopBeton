@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -32,18 +31,6 @@ export default function Contact() {
     },
   });
 
-  // Initialize Leaflet map
-  useEffect(() => {
-    // This would initialize the Leaflet map
-    // For now, we'll just show a placeholder
-    const mapElement = document.getElementById('contact-map');
-    if (mapElement && window.L) {
-      const map = window.L.map('contact-map').setView([44.3333, 26.0], 13);
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-      window.L.marker([44.3333, 26.0]).addTo(map)
-        .bindPopup('Top Beton SRL<br>Str. Barajului nr. 19, Cornetu, Ilfov');
-    }
-  }, []);
 
   const onSubmit = async (data: ContactFormData) => {
     await submitQuote.mutateAsync({
