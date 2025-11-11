@@ -8,14 +8,8 @@ export function useSubmitQuote() {
 
   return useMutation({
     mutationFn: async (data: QuoteRequest) => {
-      return apiRequest<{ success: boolean; message: string }>(
-        "/api/quotes",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      );
+      const res = await apiRequest("POST", "/api/quotes", data);
+      return res.json();
     },
     onSuccess: () => {
       toast({
