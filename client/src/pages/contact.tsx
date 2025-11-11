@@ -213,8 +213,7 @@ export default function Contact() {
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Program</h3>
                       <p className="text-muted-foreground">
-                        Luni - Vineri: 07:00 - 18:00<br />
-                        Sâmbătă: 08:00 - 14:00
+                        Luni - Vineri: 07:00 - 18:00
                       </p>
                     </div>
                   </div>
