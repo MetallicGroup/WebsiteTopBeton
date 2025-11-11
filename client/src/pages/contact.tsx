@@ -166,7 +166,7 @@ export default function Contact() {
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Adresă</h3>
                       <p className="text-muted-foreground">
-                        Str. Barajului nr. 19<br />
+                        Str. Barajului nr. 7<br />
                         Cornetu, Ilfov
                       </p>
                     </div>
@@ -205,7 +205,7 @@ export default function Contact() {
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Program</h3>
                       <p className="text-muted-foreground">
-                        Luni - Vineri: 07:00 - 18:00
+                        Luni - Vineri: 09:00 - 18:00
                       </p>
                     </div>
                   </div>
