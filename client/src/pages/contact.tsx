@@ -212,23 +212,6 @@ export default function Contact() {
                 </CardContent>
               </Card>
 
-              {/* Map */}
-              <Card className="shadow-lg">
-                <CardContent className="p-0">
-                  <div className="w-full h-80 rounded-lg overflow-hidden" data-testid="contact-map">
-                    <iframe
-                      title="Locația Top Beton SRL"
-                      src="https://www.google.com/maps?q=Strada+Barajului+19,+Cornetu,+Ilfov,+Romania&output=embed"
-                      width="100%"
-                      height="320"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
