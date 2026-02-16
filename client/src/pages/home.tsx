@@ -7,6 +7,17 @@ import { LOCALITATI } from "@/data/localitati";
 import RomaniaMap from "@/components/RomaniaMap";
 import irdProductCerts from "@assets/ird-certificates-products.png";
 import irdIsoCerts from "@assets/ird-certificates-iso.png";
+import heroImage from "@/assets/images/hero-concrete-truck.jpg";
+import aboutTeamImage from "@/assets/images/about-team.jpg";
+import blogPouringImage from "@/assets/images/blog-concrete-pouring.jpg";
+import blogTypesImage from "@/assets/images/blog-concrete-types.jpg";
+import blogPlantImage from "@/assets/images/blog-concrete-plant.jpg";
+
+const blogImages: Record<string, string> = {
+  "recomandari-punere-in-opera-betoane": blogPouringImage,
+  "ce-este-betonul-tipuri-clase": blogTypesImage,
+  "150000-m3-produsi-cornetu": blogPlantImage,
+};
 
 export default function Home() {
   return (
@@ -56,12 +67,14 @@ export default function Home() {
               </div>
             </div>
             
-            {/* Hero Image placeholder */}
             <div className="hidden lg:block animate-fade-in-up">
               <div className="relative">
-                <div className="w-full h-96 bg-primary-foreground/10 rounded-2xl flex items-center justify-center">
-                  <Truck className="w-24 h-24 text-primary-foreground/50" />
-                </div>
+                <img 
+                  src={heroImage} 
+                  alt="Autobetonieră Top Beton livrând beton proaspăt" 
+                  className="w-full h-96 object-cover rounded-2xl shadow-2xl"
+                  data-testid="img-hero"
+                />
                 <div className="absolute -bottom-6 -left-6 bg-accent text-accent-foreground px-6 py-4 rounded-2xl shadow-xl">
                   <p className="font-bold text-2xl">15+ ani</p>
                   <p className="text-sm">experiență</p>
@@ -127,9 +140,12 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
-              <div className="w-full h-96 bg-muted rounded-2xl flex items-center justify-center">
-                <Users className="w-24 h-24 text-muted-foreground" />
-              </div>
+              <img 
+                src={aboutTeamImage} 
+                alt="Echipa Top Beton la lucru pe șantier" 
+                className="w-full h-96 object-cover rounded-2xl shadow-lg"
+                data-testid="img-about-team"
+              />
             </div>
             <div className="order-1 lg:order-2">
               <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
@@ -239,9 +255,11 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {posts.slice(0, 3).map((post: Post) => (
               <Card key={post.slug} className="card-hover overflow-hidden" data-testid={`card-news-${post.slug}`}>
-                <div className="w-full h-48 bg-muted flex items-center justify-center">
-                  <span className="text-muted-foreground">Imagine articol</span>
-                </div>
+                <img 
+                  src={blogImages[post.slug] || blogPouringImage} 
+                  alt={post.title}
+                  className="w-full h-48 object-cover"
+                />
                 <CardHeader>
                   <div className="text-sm text-accent font-semibold mb-2">{post.category}</div>
                   <CardTitle className="text-xl">

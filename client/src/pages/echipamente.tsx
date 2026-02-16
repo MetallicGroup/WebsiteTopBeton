@@ -1,5 +1,10 @@
 import { Cog, Truck, FlaskConical, MapPin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import stationImage from "@/assets/images/equipment-station.jpg";
+import fleetImage from "@/assets/images/equipment-fleet.jpg";
+import pumpImage from "@/assets/images/equipment-pump.jpg";
+import labImage from "@/assets/images/equipment-lab.jpg";
+import mixerImage from "@/assets/images/equipment-mixer.jpg";
 
 export default function Echipamente() {
   return (
@@ -20,9 +25,12 @@ export default function Echipamente() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 mb-16">
             <div>
-              <div className="w-full h-96 bg-muted rounded-2xl flex items-center justify-center mb-6">
-                <Cog className="w-24 h-24 text-muted-foreground" />
-              </div>
+              <img 
+                src={stationImage} 
+                alt="Stație automatizată de producție beton Top Beton" 
+                className="w-full h-96 object-cover rounded-2xl shadow-lg mb-6"
+                data-testid="img-station"
+              />
               <h2 className="text-3xl font-bold text-foreground mb-4">Stație automatizată</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Echipamentul nostru de producție include sisteme de cântărire electronică de înaltă precizie și 
@@ -45,9 +53,12 @@ export default function Echipamente() {
             </div>
 
             <div>
-              <div className="w-full h-96 bg-muted rounded-2xl flex items-center justify-center mb-6">
-                <Truck className="w-24 h-24 text-muted-foreground" />
-              </div>
+              <img 
+                src={fleetImage} 
+                alt="Flotă modernă de autobetoniere Top Beton" 
+                className="w-full h-96 object-cover rounded-2xl shadow-lg mb-6"
+                data-testid="img-fleet"
+              />
               <h2 className="text-3xl font-bold text-foreground mb-4">Flotă modernă</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Autobetoniere și autopompe întreținute periodic, echipate cu sisteme GPS pentru monitorizare 
@@ -92,31 +103,37 @@ export default function Echipamente() {
 
           {/* Equipment Gallery */}
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="card-hover">
+            <Card className="card-hover overflow-hidden">
               <CardContent className="p-6">
-                <div className="w-full h-48 bg-muted rounded-xl flex items-center justify-center mb-4">
-                  <Cog className="w-16 h-16 text-muted-foreground" />
-                </div>
+                <img 
+                  src={stationImage} 
+                  alt="Stația de producție beton" 
+                  className="w-full h-48 object-cover rounded-xl mb-4"
+                />
                 <CardTitle className="text-lg mb-2">Stația de producție</CardTitle>
                 <p className="text-sm text-muted-foreground">Control computerizat, dozare precisă</p>
               </CardContent>
             </Card>
 
-            <Card className="card-hover">
+            <Card className="card-hover overflow-hidden">
               <CardContent className="p-6">
-                <div className="w-full h-48 bg-muted rounded-xl flex items-center justify-center mb-4">
-                  <Truck className="w-16 h-16 text-muted-foreground" />
-                </div>
+                <img 
+                  src={mixerImage} 
+                  alt="Autobetoniere Top Beton" 
+                  className="w-full h-48 object-cover rounded-xl mb-4"
+                />
                 <CardTitle className="text-lg mb-2">Autobetoniere</CardTitle>
                 <p className="text-sm text-muted-foreground">Flotă modernă, mentenanță regulată</p>
               </CardContent>
             </Card>
 
-            <Card className="card-hover">
+            <Card className="card-hover overflow-hidden">
               <CardContent className="p-6">
-                <div className="w-full h-48 bg-muted rounded-xl flex items-center justify-center mb-4">
-                  <FlaskConical className="w-16 h-16 text-muted-foreground" />
-                </div>
+                <img 
+                  src={labImage} 
+                  alt="Laborator testare calitate beton" 
+                  className="w-full h-48 object-cover rounded-xl mb-4"
+                />
                 <CardTitle className="text-lg mb-2">Laborator</CardTitle>
                 <p className="text-sm text-muted-foreground">Testare calitate, certificări</p>
               </CardContent>

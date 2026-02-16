@@ -1,52 +1,33 @@
 import { useState } from "react";
 import { Users, Truck } from "lucide-react";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Lightbox from "@/components/ui/lightbox";
 
+import galleryTeam1 from "@/assets/images/gallery-team-1_1.jpg";
+import galleryTeam2 from "@/assets/images/gallery-team-1_2.jpg";
+import galleryTeam3 from "@/assets/images/gallery-team-1_3.jpg";
+import galleryTeam4 from "@/assets/images/gallery-team-1_4.jpg";
+
+import galleryEquip1 from "@/assets/images/gallery-equip-1_1.jpg";
+import galleryEquip2 from "@/assets/images/gallery-equip-1_2.jpg";
+import galleryEquip3 from "@/assets/images/gallery-equip-1_3.jpg";
+import galleryEquip4 from "@/assets/images/gallery-equip-1_4.jpg";
+import galleryEquipPump from "@/assets/images/gallery-equip-pump.jpg";
+import galleryEquipPlant from "@/assets/images/gallery-equip-plant.jpg";
+
 const teamImages = [
-  {
-    src: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Echipa Top Beton 1"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Echipa Top Beton 2"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1590859808308-3d2d9c515b1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Echipa Top Beton 3"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Echipa Top Beton 4"
-  }
+  { src: galleryTeam1, alt: "Echipa Top Beton pe șantier" },
+  { src: galleryTeam2, alt: "Echipa Top Beton la lucru" },
+  { src: galleryTeam3, alt: "Specialiști Top Beton" },
+  { src: galleryTeam4, alt: "Echipa de profesioniști Top Beton" },
 ];
 
 const equipmentImages = [
-  {
-    src: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Stație producție"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Autobetonieră"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Pompă beton"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Laborator"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Silozuri"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-    alt: "Sistem GPS"
-  }
+  { src: galleryEquip1, alt: "Autobetonieră Top Beton" },
+  { src: galleryEquip2, alt: "Transport beton pe șantier" },
+  { src: galleryEquipPlant, alt: "Stația de producție beton" },
+  { src: galleryEquipPump, alt: "Pompă beton Top Beton" },
+  { src: galleryEquip3, alt: "Flotă autobetoniere" },
+  { src: galleryEquip4, alt: "Echipamente moderne Top Beton" },
 ];
 
 export default function GalerieFoto() {
@@ -60,7 +41,6 @@ export default function GalerieFoto() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <section className="hero-gradient text-primary-foreground py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl font-bold mb-4">Galerie Foto</h1>
@@ -70,7 +50,6 @@ export default function GalerieFoto() {
         </div>
       </section>
 
-      {/* Team Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="mb-16">
@@ -96,7 +75,6 @@ export default function GalerieFoto() {
             </div>
           </div>
 
-          {/* Equipment Section */}
           <div>
             <h2 className="text-3xl font-bold text-foreground mb-8 flex items-center">
               <Truck className="w-8 h-8 text-accent mr-3" />
@@ -122,7 +100,6 @@ export default function GalerieFoto() {
         </div>
       </section>
 
-      {/* Lightbox */}
       <Lightbox
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}

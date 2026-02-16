@@ -2,6 +2,15 @@ import { Link } from "wouter";
 import { ArrowRight, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { posts, type Post } from "@/data/posts";
+import blogPouringImage from "@/assets/images/blog-concrete-pouring.jpg";
+import blogTypesImage from "@/assets/images/blog-concrete-types.jpg";
+import blogPlantImage from "@/assets/images/blog-concrete-plant.jpg";
+
+const blogImages: Record<string, string> = {
+  "recomandari-punere-in-opera-betoane": blogPouringImage,
+  "ce-este-betonul-tipuri-clase": blogTypesImage,
+  "150000-m3-produsi-cornetu": blogPlantImage,
+};
 
 export default function Noutati() {
   return (
@@ -22,9 +31,11 @@ export default function Noutati() {
           {posts.length > 0 && (
             <Card className="overflow-hidden mb-12 shadow-xl bg-gradient-to-r from-muted/30 to-accent/5">
               <div className="grid lg:grid-cols-2">
-                <div className="w-full h-64 lg:h-auto bg-muted flex items-center justify-center">
-                  <span className="text-muted-foreground text-lg">Imagine articol</span>
-                </div>
+                <img 
+                  src={blogImages[posts[0].slug] || blogPouringImage} 
+                  alt={posts[0].title}
+                  className="w-full h-64 lg:h-auto object-cover"
+                />
                 <div className="p-8 lg:p-12 flex flex-col justify-center">
                   <div className="inline-block bg-accent/10 text-accent px-4 py-2 rounded-lg font-semibold text-sm mb-4 self-start">
                     ARTICOL DESTACAT
@@ -53,9 +64,11 @@ export default function Noutati() {
             {posts.map((post: Post) => (
               <Card key={post.slug} className="card-hover overflow-hidden shadow-lg" data-testid={`card-news-${post.slug}`}>
                 <div className="grid lg:grid-cols-3">
-                  <div className="w-full h-64 lg:h-auto bg-muted flex items-center justify-center">
-                    <span className="text-muted-foreground">Imagine articol</span>
-                  </div>
+                  <img 
+                    src={blogImages[post.slug] || blogPouringImage} 
+                    alt={post.title}
+                    className="w-full h-64 lg:h-auto object-cover"
+                  />
                   <div className="lg:col-span-2 p-8">
                     <div className="flex items-center text-sm text-muted-foreground mb-4">
                       <Calendar className="w-4 h-4 mr-2" />

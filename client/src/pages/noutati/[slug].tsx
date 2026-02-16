@@ -4,6 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { posts } from "@/data/posts";
 import NotFound from "@/pages/not-found";
+import blogPouringImage from "@/assets/images/blog-concrete-pouring.jpg";
+import blogTypesImage from "@/assets/images/blog-concrete-types.jpg";
+import blogPlantImage from "@/assets/images/blog-concrete-plant.jpg";
+
+const blogImages: Record<string, string> = {
+  "recomandari-punere-in-opera-betoane": blogPouringImage,
+  "ce-este-betonul-tipuri-clase": blogTypesImage,
+  "150000-m3-produsi-cornetu": blogPlantImage,
+};
 
 export default function NoutatiSlug() {
   const { slug } = useParams();
@@ -28,10 +37,12 @@ export default function NoutatiSlug() {
           </nav>
 
           <Card className="overflow-hidden shadow-lg">
-            {/* Featured image placeholder */}
-            <div className="w-full h-96 bg-muted flex items-center justify-center">
-              <span className="text-muted-foreground text-lg">Imagine articol</span>
-            </div>
+            <img 
+              src={blogImages[post.slug] || blogPouringImage} 
+              alt={post.title}
+              className="w-full h-96 object-cover"
+              data-testid="img-article-featured"
+            />
             
             <CardContent className="p-8 lg:p-12">
               <div className="inline-block bg-accent/10 text-accent px-4 py-2 rounded-lg font-semibold text-sm mb-4">
