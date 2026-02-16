@@ -1,0 +1,541 @@
+/* ============================================================
+   CONFIGURARI GLOBALE
+============================================================ */
+
+const PHONE_NUMBER_ID = "879802548542798";
+const VERIFY_TOKEN = "topbeton";
+const TOKEN = "EAATeZBV8lkZAkBPy4hPzkNP26QXlCBMZBIZBPdZCkO3hHg6XUOYN45plie5VZCWnwJdqshMfI4Q2s58KnmNLMzZAPgxKaBeqRp9gcSIELAAozizcFK74wkW120wkZABXOABG4PfXTZCm2GepfqMSVCha3m3AL07ZCXQziaBFUxRDoxfsNCauooB7xEHVfKTVuikAZDZD";
+
+const SHEET_NAME = "Leads";
+const AGENT_NUMBER = "0733342513";
+
+const ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjRkODk2OGU4Y2JjZDQwNDI4Mzk1ZjIwOTU3NTJhNGFmIiwiaCI6Im11cm11cjY0In0=";
+
+// Adresa statiei Top Beton
+const STATION_ADDRESS = "Strada Barajului 7, Cornetu, Ilfov";
+
+
+/* ============================================================
+   VERIFICARE WEBHOOK
+============================================================ */
+
+function doGet(e) {
+  const mode = e.parameter["hub.mode"];
+  const token = e.parameter["hub.verify_token"];
+  const challenge = e.parameter["hub.challenge"];
+
+  if (mode && token === VERIFY_TOKEN) {
+    return ContentService.createTextOutput(challenge);
+  }
+  return ContentService.createTextOutput("TOKEN INVALID");
+}
+
+
+/* ============================================================
+   LOGARE ERORI IN COL. C
+============================================================ */
+
+function logErrorToSheet(from, msg) {
+  const sh = SpreadsheetApp.getActive().getSheetByName(SHEET_NAME);
+  const data = sh.getDataRange().getValues();
+
+  for (let i = 1; i < data.length; i++) {
+    let nr = data[i][1] ? data[i][1].toString() : "";
+    if (nr === from.toString()) {
+      sh.getRange(i+1, 3).setValue(msg);
+      return;
+    }
+  }
+
+  sh.appendRow(["NECUNOSCUT", from, msg]);
+}
+
+
+/* ============================================================
+   HANDLER PRINCIPAL (FULL FLOW)
+============================================================ */
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const entry = data.entry?.[0]?.changes?.[0]?.value;
+    const messageObj = entry?.messages?.[0];
+
+    if (!messageObj)
+      return ContentService.createTextOutput("NO MESSAGE");
+
+    const from = messageObj.from;
+    const type = messageObj.type;
+    const text = messageObj.text?.body ?? "";
+
+    logErrorToSheet(from, "Mesaj primit, tip: " + type);
+
+
+    /* ============================================================
+       1️⃣ BUTOANE DIN TEMPLATE ("Prețuri")
+    ============================================================= */
+
+    if (messageObj.button) {
+      const replyId = messageObj.button.text || messageObj.button.payload;
+      logErrorToSheet(from, "Buton TEMPLATE apăsat: " + replyId);
+
+      if (replyId === "Prețuri") {
+        sendMessage(from, "📍 În ce *zonă* locuiți?");
+        saveTemp(from, "stage", "zona");
+        return ContentService.createTextOutput("OK");
+      }
+
+      logErrorToSheet(from, "Buton TEMPLATE necunoscut: " + replyId);
+      return ContentService.createTextOutput("OK");
+    }
+
+
+    /* ============================================================
+       2️⃣ BUTOANE INTERACTIVE
+    ============================================================= */
+
+    if (type === "interactive") {
+      const replyId = messageObj.interactive?.button_reply?.id ||
+                      messageObj.interactive?.list_reply?.id;
+
+      logErrorToSheet(from, "Buton INTERACTIV apăsat: " + replyId);
+
+      if (!replyId) {
+        logErrorToSheet(from, "Eroare: replyId lipsă");
+        return ContentService.createTextOutput("OK");
+      }
+
+      /* ---------- A. ALEGERE POMPA ---------- */
+      if (replyId === "pompa_da" || replyId === "pompa_nu") {
+        const rasp = replyId === "pompa_da" ? "DA" : "NU";
+        saveTemp(from, "pompa", rasp);
+
+        sendClassList(from);
+        saveTemp(from, "stage", "clasa");
+        return ContentService.createTextOutput("OK");
+      }
+
+      /* ---------- B. ALEGERE CLASĂ BETON ----------- */
+      if (replyId.startsWith("beton_")) {
+        const clasa = replyId.replace("beton_", "");
+        saveTemp(from, "clasa", clasa);
+
+        processFinalCalculation(from);
+        return ContentService.createTextOutput("OK");
+      }
+
+      /* ---------- C. BUTON FINAL "CĂTRE AGENT" ---------- */
+      if (replyId === "catre_agent_final") {
+        handleSendToAgent(from);
+        return ContentService.createTextOutput("OK");
+      }
+
+      logErrorToSheet(from, "Buton INTERACTIV necunoscut: " + replyId);
+      return ContentService.createTextOutput("OK");
+    }
+
+
+    /* ============================================================
+       3️⃣ FLOW TEXT PROGRESIV
+    ============================================================= */
+
+    const stage = getTemp(from, "stage");
+    logErrorToSheet(from, "Stage actual: " + stage);
+
+
+    /* ---------- PAS 1: ZONA ---------- */
+    if (stage === "zona") {
+      saveTemp(from, "zona", text);
+      sendMessage(from, "🛣 Care este *strada exactă* a proiectului?");
+      saveTemp(from, "stage", "strada");
+      return ContentService.createTextOutput("OK");
+    }
+
+    /* ---------- PAS 2: STRADA ---------- */
+    if (stage === "strada") {
+      saveTemp(from, "strada", text);
+      sendMessage(from, "📦 De câți metri cubi aveți nevoie?");
+      saveTemp(from, "stage", "cantitate");
+      return ContentService.createTextOutput("OK");
+    }
+
+    /* ---------- PAS 3: CANTITATE ---------- */
+    if (stage === "cantitate") {
+      const mc = parseFloat(text.replace(",", "."));
+
+      if (isNaN(mc) || mc <= 0) {
+        sendMessage(from, "⚠️ Introduceți o valoare validă (ex: 12)");
+        return ContentService.createTextOutput("OK");
+      }
+
+      saveTemp(from, "cant", mc);
+
+      sendPompaButtons(from);
+      saveTemp(from, "stage", "pompa");
+      return ContentService.createTextOutput("OK");
+    }
+
+  } catch (err) {
+    logErrorToSheet("ERR", "Eroare generala: " + err);
+  }
+
+  return ContentService.createTextOutput("OK");
+}
+
+
+/* ============================================================
+   FUNCTII POMPĂ / LISTĂ CLASE
+============================================================ */
+
+function sendPompaButtons(to) {
+  const url = `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`;
+  UrlFetchApp.fetch(url, {
+    method: "post",
+    contentType: "application/json",
+    payload: JSON.stringify({
+      messaging_product: "whatsapp",
+      to: to,
+      type: "interactive",
+      interactive: {
+        type: "button",
+        body: { text: "🔧 Doriți *turnare cu pompă*?" },
+        action: {
+          buttons: [
+            { type: "reply", reply: { id: "pompa_da", title: "Cu pompă" }},
+            { type: "reply", reply: { id: "pompa_nu", title: "Fără pompă" }}
+          ]
+        }
+      }
+    }),
+    headers: { Authorization: "Bearer " + TOKEN }
+  });
+}
+
+
+function sendClassList(to) {
+
+  const classes = [
+    "C 8/10","C 12/15","C 16/20","C 20/25","C 25/30","C 30/37"
+  ];
+
+  const rows = classes.map(c => ({
+    id: "beton_" + c,
+    title: c,
+    description: "Selectați"
+  }));
+
+  const url = `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`;
+  UrlFetchApp.fetch(url, {
+    method: "post",
+    contentType: "application/json",
+    payload: JSON.stringify({
+      messaging_product: "whatsapp",
+      to: to,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        body: { text: "🧱 Alegeți *clasa de beton*:" },
+        action: {
+          button: "Selectează",
+          sections: [{ title: "Clase Beton", rows }]
+        }
+      }
+    }),
+    headers: { Authorization: "Bearer " + TOKEN }
+  });
+}
+
+
+/* ============================================================
+   CALC DISTANTA ORS
+============================================================ */
+
+function getDistanceKM(startAddress, endAddress) {
+  try {
+    const startRes = UrlFetchApp.fetch(
+      `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(startAddress)}`
+    );
+    const startCoords = JSON.parse(startRes).features[0].geometry.coordinates;
+
+    const endRes = UrlFetchApp.fetch(
+      `https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(endAddress)}`
+    );
+    const endCoords = JSON.parse(endRes).features[0].geometry.coordinates;
+
+    const routeRes = UrlFetchApp.fetch(
+      `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}`,
+      {
+        method: "post",
+        contentType: "application/json",
+        payload: JSON.stringify({ coordinates: [startCoords, endCoords] })
+      }
+    );
+
+    const meters = JSON.parse(routeRes).routes[0].summary.distance;
+    return parseFloat((meters / 1000).toFixed(1));
+
+  } catch (err) {
+    return -1;
+  }
+}
+
+
+/* ============================================================
+   CALCUL FINAL — MESAJ CLIENT
+============================================================ */
+
+function processFinalCalculation(phone) {
+
+  const zona = getTemp(phone, "zona");
+  const strada = getTemp(phone, "strada");
+  const cant = parseFloat(getTemp(phone, "cant"));
+  const pompa = getTemp(phone, "pompa");
+  const clasa = getTemp(phone, "clasa");
+
+  const preturiBeton = {
+    "C 8/10": 315,
+    "C 12/15": 325,
+    "C 16/20": 335,
+    "C 20/25": 350,
+    "C 25/30": 370,
+    "C 30/37": 390
+  };
+
+  const pretMC = preturiBeton[clasa];
+  const costBeton = cant * pretMC;
+
+  let costPompa = 0;
+  if (pompa === "DA") {
+    costPompa = Math.max(700, cant * 25);
+  }
+
+  const fullAddress = zona + ", " + strada;
+  const kmOneWay = getDistanceKM(STATION_ADDRESS, fullAddress);
+
+  if (kmOneWay < 0) {
+    sendMessage(phone, "❗ Eroare la calcularea distanței. Reîncercați.");
+    return;
+  }
+
+  const drumuri = Math.ceil(cant / 9);
+
+  // ❗ NOUA FORMULĂ TRANSPORT
+  const kmTotal = kmOneWay * 2 * drumuri;
+  const kmFacturati = Math.max(0, kmTotal - 20);
+  const costTransport = kmFacturati * 15;
+
+  const totalFaraTVA = costBeton + costPompa + costTransport;
+const totalCuTVA = Math.round(totalFaraTVA * 1.21);
+
+const msg =
+  "💰 TOTAL cu TVA inclus: " + totalCuTVA + " lei\n\n" +
+  "Trimitem datele către un agent?";
+
+  sendMessageWithButton(phone, msg, "Către agent", "catre_agent_final");
+}
+
+
+/* ============================================================
+   MESAJ CU BUTON
+============================================================ */
+
+function sendMessageWithButton(to, text, buttonText, buttonId) {
+  UrlFetchApp.fetch(
+    `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: to,
+        type: "interactive",
+        interactive: {
+          type: "button",
+          body: { text: text },
+          action: {
+            buttons: [
+              { type: "reply", reply: { id: buttonId, title: buttonText }}
+            ]
+          }
+        }
+      }),
+      headers: { Authorization: "Bearer " + TOKEN }
+    }
+  );
+}
+
+
+/* ============================================================
+   TRIMITERE TEMPLATE AGENT
+============================================================ */
+
+function sendLeadTemplateToAgent(name, phone, zona, strada, cant, pompa, clasa, total) {
+  UrlFetchApp.fetch(
+    `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
+    {
+      method:"post",
+      contentType:"application/json",
+      payload: JSON.stringify({
+        messaging_product:"whatsapp",
+        to:"4" + AGENT_NUMBER,
+        type:"template",
+        template:{
+          name:"leads",
+          language:{ code:"ro" },
+          components:[{
+            type:"body",
+            parameters:[
+              { type:"text", text:name },
+              { type:"text", text:phone },
+              { type:"text", text: zona + ", " + strada },
+              { type:"text", text: clasa + " / " + cant + " mc / pompă: " + pompa + " / total: " + total + " lei" }
+            ]
+          }]
+        }
+      }),
+      headers:{ Authorization:"Bearer " + TOKEN }
+    }
+  );
+}
+
+
+/* ============================================================
+   CLICK FINAL → AGENT
+============================================================ */
+
+function handleSendToAgent(phone) {
+
+  const zona = getTemp(phone, "zona");
+  const strada = getTemp(phone, "strada");
+  const cant = parseFloat(getTemp(phone, "cant"));
+  const pompa = getTemp(phone, "pompa");
+  const clasa = getTemp(phone, "clasa");
+
+  const total = processFinalCalculationSilent(phone);
+
+  const sh = SpreadsheetApp.getActive().getSheetByName(SHEET_NAME);
+  sh.appendRow([zona + ", " + strada, phone, clasa, cant, pompa, total, new Date()]);
+
+  sendLeadTemplateToAgent("Client", phone, zona, strada, cant, pompa, clasa, total);
+
+  sendMessage(phone, "Mulțumim! Un agent te va contacta în scurt timp.");
+}
+
+
+/* ============================================================
+   CALCUL SILENT — pentru agent
+============================================================ */
+
+function processFinalCalculationSilent(phone) {
+
+  const zona = getTemp(phone, "zona");
+  const strada = getTemp(phone, "strada");
+  const cant = parseFloat(getTemp(phone, "cant"));
+  const pompa = getTemp(phone, "pompa");
+  const clasa = getTemp(phone, "clasa");
+
+  const preturiBeton = {
+    "C 8/10": 315,
+    "C 12/15": 325,
+    "C 16/20": 335,
+    "C 20/25": 350,
+    "C 25/30": 370,
+    "C 30/37": 390
+  };
+
+  const costBeton = cant * preturiBeton[clasa];
+
+  let costPompa = 0;
+  if (pompa === "DA") {
+    costPompa = Math.max(700, cant * 25);
+  }
+
+  const kmOneWay = getDistanceKM(STATION_ADDRESS, zona + ", " + strada);
+  const drumuri = Math.ceil(cant / 9);
+
+  // ❗ NOUA FORMULĂ TRANSPORT
+  const kmTotal = kmOneWay * 2 * drumuri;
+  const kmFacturati = Math.max(0, kmTotal - 20);
+  const costTransport = kmFacturati * 15;
+
+const totalFaraTVA = costBeton + costPompa + costTransport;
+return Math.round(totalFaraTVA * 1.21);
+}
+
+
+/* ============================================================
+   FUNCTII UTILE
+============================================================ */
+
+function sendMessage(to, text) {
+  UrlFetchApp.fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+    method: "post",
+    contentType: "application/json",
+    payload: JSON.stringify({
+      messaging_product: "whatsapp",
+      to: to,
+      text: { body: text }
+    }),
+    headers: { Authorization: "Bearer " + TOKEN }
+  });
+}
+
+function saveTemp(phone, key, value) {
+  CacheService.getScriptCache().put(phone + "_" + key, value, 21600);
+}
+
+function getTemp(phone, key) {
+  return CacheService.getScriptCache().get(phone + "_" + key);
+}
+
+/* ============================================================
+   START FLOW MANUAL (TESTARE)
+============================================================ */
+
+function startFlow() {
+  const sh = SpreadsheetApp.getActive().getSheetByName(SHEET_NAME);
+  const data = sh.getDataRange().getValues();
+
+  const row = 2; // testăm cu rândul 2
+  const name = data[row - 1][0];
+  const phone = data[row - 1][1];
+
+  if (!name || !phone) {
+    Logger.log("❗ Lipsesc date în A2/B2");
+    return;
+  }
+
+  sendIntroTemplate(phone.toString(), name);
+  Logger.log("👉 Intro trimis către: " + phone + " | " + name);
+}
+
+
+/* ============================================================
+   TEMPLATE INTRO
+============================================================ */
+function sendIntroTemplate(to, clientName) {
+  const url = `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`;
+
+  UrlFetchApp.fetch(url, {
+    method: "post",
+    contentType: "application/json",
+    payload: JSON.stringify({
+      messaging_product: "whatsapp",
+      to: to,
+      type: "template",
+      template: {
+        name: "intro",
+        language: { code: "ro" },
+        components: [
+          {
+            type: "body",
+            parameters: [
+              { type: "text", text: clientName }
+            ]
+          }
+        ]
+      }
+    }),
+    headers: { Authorization: "Bearer " + TOKEN }
+  });
+}
