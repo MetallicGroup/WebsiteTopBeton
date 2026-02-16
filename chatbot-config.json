@@ -29,8 +29,8 @@
     },
     {
       "id": "strada",
-      "botMessage": "Care este strada exactă a proiectului?",
-      "placeholder": "Strada și numărul...",
+      "botMessage": "Care este strada și numărul casei/imobilului?",
+      "placeholder": "Ex: Stejarului nr. 10...",
       "inputType": "text"
     },
     {
