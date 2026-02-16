@@ -54,7 +54,7 @@
   "invalidQuantityMessage": "Introduceți o valoare validă (ex: 12)",
   "retryButtonLabel": "Da, reîncerc",
   "newCalcButtonLabel": "Calculează din nou",
-  "resultTemplate": "TOTAL cu TVA inclus: {totalCuTVA} lei\n\nDetalii:\n• Beton {clasa}: {costBeton} lei ({pretMC} lei/mc × {cantitate} mc)\n• Transport: {costTransport} lei ({kmOneWay} km, {drumuri} {drumuriLabel})\n• Pompă: {costPompa} lei\n• Total fără TVA: {totalFaraTVA} lei\n\nOferta a fost trimisă pe email la {email}. Un agent vă va contacta în scurt timp!",
+  "resultTemplate": "TOTAL cu TVA inclus: {totalCuTVA} lei\n\nOferta a fost trimisă pe email la {email}. Un agent vă va contacta în scurt timp!",
   "newCalcQuestion": "Doriți o altă ofertă?",
   "headerTitle": "Calculator Preț",
   "headerSubtitle": "Top Beton SRL",
