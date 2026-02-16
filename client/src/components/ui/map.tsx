@@ -40,7 +40,7 @@ export default function Map() {
         marker.bindPopup(`
           <div class="p-2">
             <h3 class="font-semibold text-sm">Top Beton SRL</h3>
-            <p class="text-xs text-gray-600">Str. Barajului nr. 19, Cornetu, Ilfov</p>
+            <p class="text-xs text-gray-600">Str. Barajului nr. 7, Cornetu, Ilfov</p>
             <p class="text-xs text-blue-600 mt-1">
               <a href="tel:0752400200">0752 400 200</a>
             </p>

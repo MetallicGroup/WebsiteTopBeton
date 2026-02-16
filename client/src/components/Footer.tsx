@@ -90,7 +90,7 @@ export default function Footer() {
             <div className="space-y-4 text-primary-foreground/80">
               <div>
                 <p className="font-semibold">Adresă</p>
-                <p data-testid="footer-address">Str. Barajului nr. 19, Cornetu, Ilfov</p>
+                <p data-testid="footer-address">Str. Barajului nr. 7, Cornetu, Ilfov</p>
               </div>
               <div>
                 <p className="font-semibold">Telefon</p>

@@ -35,7 +35,7 @@ export default function Map({
       // Add marker for Cornetu location
       window.L.marker(center)
         .addTo(mapInstance.current)
-        .bindPopup('Top Beton SRL<br>Str. Barajului nr. 19, Cornetu, Ilfov')
+        .bindPopup('Top Beton SRL<br>Str. Barajului nr. 7, Cornetu, Ilfov')
         .openPopup();
     }
 

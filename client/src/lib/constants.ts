@@ -1,7 +1,7 @@
 export const COMPANY_INFO = {
   name: "Top Beton SRL",
   slogan: "Mergi pe calitate", 
-  address: "Str. Barajului nr. 19, Cornetu, Ilfov",
+  address: "Str. Barajului nr. 7, Cornetu, Ilfov",
   phone: "0752 400 200",
   email: "office@topbeton.ro",
   foundedYear: 2008,

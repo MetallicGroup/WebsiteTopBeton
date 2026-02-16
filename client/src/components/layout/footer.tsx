@@ -95,7 +95,7 @@ export default function Footer() {
               <li className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
                 <div className="text-primary-foreground/80">
-                  <div>Str. Barajului nr. 19</div>
+                  <div>Str. Barajului nr. 7</div>
                   <div>Cornetu, Ilfov</div>
                 </div>
               </li>
