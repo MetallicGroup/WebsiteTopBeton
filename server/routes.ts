@@ -41,6 +41,29 @@ const calculatorSchema = z.object({
   clasa: z.string().refine(c => c in PRETURI_BETON, "Clasă invalidă"),
 });
 
+function normalizeStreet(raw: string): string {
+  let s = raw.trim();
+  const prefixRegex = /^(strada|str\.?|strd\.?|aleea|bulevardul|bd\.?|blvd\.?|calea|cal\.?|drumul|dr\.?|intrarea|intr\.?|fundatura|fund\.?|soseaua|sos\.?|splaiulul?|spl\.?)\s+/i;
+  if (!prefixRegex.test(s)) {
+    s = "Strada " + s;
+  } else {
+    s = s.replace(prefixRegex, (match) => {
+      const lower = match.trim().toLowerCase();
+      if (lower.startsWith("str")) return "Strada ";
+      if (lower.startsWith("al")) return "Aleea ";
+      if (lower.startsWith("b")) return "Bulevardul ";
+      if (lower.startsWith("cal")) return "Calea ";
+      if (lower.startsWith("dr")) return "Drumul ";
+      if (lower.startsWith("intr")) return "Intrarea ";
+      if (lower.startsWith("fund")) return "Fundatura ";
+      if (lower.startsWith("sos")) return "Soseaua ";
+      if (lower.startsWith("spl")) return "Splaiul ";
+      return match;
+    });
+  }
+  return s;
+}
+
 async function getDistanceKM(startAddress: string, endAddress: string): Promise<number> {
   const apiKey = process.env.ORS_API_KEY;
   if (!apiKey) return -1;
@@ -138,7 +161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         costPompa = Math.max(700, data.cantitate * 25);
       }
 
-      const fullAddress = data.zona + ", " + data.strada;
+      const normalizedStrada = normalizeStreet(data.strada);
+      const fullAddress = normalizedStrada + ", " + data.zona + ", Romania";
       const kmOneWay = await getDistanceKM(STATION_ADDRESS, fullAddress);
 
       if (kmOneWay < 0) {
