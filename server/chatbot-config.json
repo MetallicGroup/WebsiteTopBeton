@@ -1,0 +1,62 @@
+{
+  "welcomeMessages": [
+    "Bună! Sunt calculatorul de preț Top Beton. Vă ajut să aflați costul betonului livrat la adresa dumneavoastră."
+  ],
+  "steps": [
+    {
+      "id": "name",
+      "botMessage": "Care este numele dumneavoastră?",
+      "placeholder": "Numele dumneavoastră...",
+      "inputType": "text"
+    },
+    {
+      "id": "phone",
+      "botMessage": "Care este numărul dumneavoastră de telefon?",
+      "placeholder": "07xx xxx xxx",
+      "inputType": "tel"
+    },
+    {
+      "id": "email",
+      "botMessage": "Care este adresa de email?",
+      "placeholder": "email@exemplu.ro",
+      "inputType": "email"
+    },
+    {
+      "id": "zona",
+      "botMessage": "În ce zonă / localitate se află proiectul? (ex: Bragadiru, Clinceni, Popești-Leordeni)",
+      "placeholder": "Ex: Bragadiru, Clinceni...",
+      "inputType": "text"
+    },
+    {
+      "id": "strada",
+      "botMessage": "Care este strada exactă a proiectului?",
+      "placeholder": "Strada și numărul...",
+      "inputType": "text"
+    },
+    {
+      "id": "cantitate",
+      "botMessage": "De câți metri cubi (mc) aveți nevoie?",
+      "placeholder": "Ex: 12",
+      "inputType": "decimal"
+    }
+  ],
+  "pumpQuestion": "Doriți turnare cu pompă?",
+  "pumpOptions": [
+    { "label": "Cu pompă", "value": "DA" },
+    { "label": "Fără pompă", "value": "NU" }
+  ],
+  "classQuestion": "Alegeți clasa de beton:",
+  "concreteClasses": ["C 8/10", "C 12/15", "C 16/20", "C 20/25", "C 25/30", "C 30/37"],
+  "calculatingMessage": "Se calculează prețul...",
+  "errorMessage": "A apărut o eroare. Încercați din nou.",
+  "connectionErrorMessage": "A apărut o eroare de conexiune. Încercați din nou.",
+  "invalidEmailMessage": "Adresa de email nu pare validă. Încercați din nou:",
+  "invalidQuantityMessage": "Introduceți o valoare validă (ex: 12)",
+  "retryButtonLabel": "Da, reîncerc",
+  "newCalcButtonLabel": "Calculează din nou",
+  "resultTemplate": "TOTAL cu TVA inclus: {totalCuTVA} lei\n\nDetalii:\n• Beton {clasa}: {costBeton} lei ({pretMC} lei/mc × {cantitate} mc)\n• Transport: {costTransport} lei ({kmOneWay} km, {drumuri} {drumuriLabel})\n• Pompă: {costPompa} lei\n• Total fără TVA: {totalFaraTVA} lei\n\nOferta a fost trimisă pe email la {email}. Un agent vă va contacta în scurt timp!",
+  "newCalcQuestion": "Doriți o altă ofertă?",
+  "headerTitle": "Calculator Preț",
+  "headerSubtitle": "Top Beton SRL",
+  "buttonLabel": "Calculator Preț"
+}

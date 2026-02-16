@@ -1,19 +1,26 @@
 import { useState, useRef, useEffect } from "react";
 import { Calculator, X, Send, ArrowLeft } from "lucide-react";
 
-type Stage =
-  | "welcome"
-  | "name"
-  | "phone"
-  | "email"
-  | "zona"
-  | "strada"
-  | "cantitate"
-  | "pompa"
-  | "clasa"
-  | "calculating"
-  | "result"
-  | "error";
+interface ChatbotConfig {
+  welcomeMessages: string[];
+  steps: { id: string; botMessage: string; placeholder: string; inputType: string }[];
+  pumpQuestion: string;
+  pumpOptions: { label: string; value: string }[];
+  classQuestion: string;
+  concreteClasses: string[];
+  calculatingMessage: string;
+  errorMessage: string;
+  connectionErrorMessage: string;
+  invalidEmailMessage: string;
+  invalidQuantityMessage: string;
+  retryButtonLabel: string;
+  newCalcButtonLabel: string;
+  resultTemplate: string;
+  newCalcQuestion: string;
+  headerTitle: string;
+  headerSubtitle: string;
+  buttonLabel: string;
+}
 
 interface Message {
   from: "bot" | "user";
@@ -21,42 +28,33 @@ interface Message {
   buttons?: { label: string; value: string }[];
 }
 
-const CLASE_BETON = [
-  "C 8/10",
-  "C 12/15",
-  "C 16/20",
-  "C 20/25",
-  "C 25/30",
-  "C 30/37",
-];
-
 export default function PriceCalculator() {
   const [isOpen, setIsOpen] = useState(false);
-  const [stage, setStage] = useState<Stage>("welcome");
+  const [config, setConfig] = useState<ChatbotConfig | null>(null);
+  const [currentStepIndex, setCurrentStepIndex] = useState(-1);
+  const [stage, setStage] = useState<"idle" | "steps" | "pompa" | "clasa" | "calculating" | "result" | "error">("idle");
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    zona: "",
-    strada: "",
-    cantitate: 0,
-    pompa: "",
-    clasa: "",
-  });
+  const [formData, setFormData] = useState<Record<string, string>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetch("/api/chatbot-config")
+      .then((r) => r.json())
+      .then((data) => setConfig(data))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen && inputRef.current && !["pompa", "clasa", "calculating", "result", "error", "welcome"].includes(stage)) {
+    if (isOpen && inputRef.current && stage === "steps") {
       inputRef.current.focus();
     }
-  }, [isOpen, stage]);
+  }, [isOpen, stage, currentStepIndex]);
 
   function addBotMessage(text: string, buttons?: { label: string; value: string }[]) {
     setMessages((prev) => [...prev, { from: "bot", text, buttons }]);
@@ -68,136 +66,90 @@ export default function PriceCalculator() {
 
   function openChat() {
     setIsOpen(true);
+    if (!config) return;
     if (messages.length === 0) {
-      setTimeout(() => {
-        setMessages([
-          {
-            from: "bot",
-            text: "Bună! Sunt calculatorul de preț Top Beton. Vă ajut să aflați costul betonului livrat la adresa dumneavoastră.",
-          },
-          {
-            from: "bot",
-            text: "Care este numele dumneavoastră?",
-          },
-        ]);
-        setStage("name");
-      }, 300);
+      startConversation();
     }
+  }
+
+  function startConversation() {
+    if (!config) return;
+    const welcomeMsgs: Message[] = config.welcomeMessages.map((text) => ({ from: "bot" as const, text }));
+    const firstStepMsg: Message = { from: "bot", text: config.steps[0]?.botMessage || "" };
+
+    setTimeout(() => {
+      setMessages([...welcomeMsgs, firstStepMsg]);
+      setCurrentStepIndex(0);
+      setStage("steps");
+    }, 300);
   }
 
   function resetChat() {
     setMessages([]);
-    setStage("welcome");
+    setCurrentStepIndex(-1);
+    setStage("idle");
     setInputValue("");
-    setFormData({
-      name: "",
-      phone: "",
-      email: "",
-      zona: "",
-      strada: "",
-      cantitate: 0,
-      pompa: "",
-      clasa: "",
-    });
-    setTimeout(() => {
-      setMessages([
-        {
-          from: "bot",
-          text: "Bună! Sunt calculatorul de preț Top Beton. Vă ajut să aflați costul betonului livrat la adresa dumneavoastră.",
-        },
-        {
-          from: "bot",
-          text: "Care este numele dumneavoastră?",
-        },
-      ]);
-      setStage("name");
-    }, 300);
+    setFormData({});
+    setTimeout(() => startConversation(), 100);
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
+    if (!config) return;
     const value = inputValue.trim();
     if (!value) return;
+
+    const currentStep = config.steps[currentStepIndex];
+    if (!currentStep) return;
+
+    if (currentStep.inputType === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        setInputValue("");
+        setTimeout(() => addBotMessage(config.invalidEmailMessage), 400);
+        return;
+      }
+    }
+
+    if (currentStep.inputType === "decimal") {
+      const num = parseFloat(value.replace(",", "."));
+      if (isNaN(num) || num <= 0) {
+        setInputValue("");
+        setTimeout(() => addBotMessage(config.invalidQuantityMessage), 400);
+        return;
+      }
+    }
 
     setInputValue("");
     addUserMessage(value);
 
-    switch (stage) {
-      case "name":
-        setFormData((p) => ({ ...p, name: value }));
-        setTimeout(() => {
-          addBotMessage("Care este numărul dumneavoastră de telefon?");
-          setStage("phone");
-        }, 400);
-        break;
+    const newFormData = { ...formData, [currentStep.id]: value };
+    setFormData(newFormData);
 
-      case "phone":
-        setFormData((p) => ({ ...p, phone: value }));
-        setTimeout(() => {
-          addBotMessage("Care este adresa de email?");
-          setStage("email");
-        }, 400);
-        break;
-
-      case "email": {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-          setTimeout(() => addBotMessage("Adresa de email nu pare validă. Încercați din nou:"), 400);
-          return;
-        }
-        setFormData((p) => ({ ...p, email: value }));
-        setTimeout(() => {
-          addBotMessage("În ce zonă / localitate se află proiectul? (ex: Bragadiru, Clinceni, Popești-Leordeni)");
-          setStage("zona");
-        }, 400);
-        break;
-      }
-
-      case "zona":
-        setFormData((p) => ({ ...p, zona: value }));
-        setTimeout(() => {
-          addBotMessage("Care este strada exactă a proiectului?");
-          setStage("strada");
-        }, 400);
-        break;
-
-      case "strada":
-        setFormData((p) => ({ ...p, strada: value }));
-        setTimeout(() => {
-          addBotMessage("De câți metri cubi (mc) aveți nevoie?");
-          setStage("cantitate");
-        }, 400);
-        break;
-
-      case "cantitate": {
-        const mc = parseFloat(value.replace(",", "."));
-        if (isNaN(mc) || mc <= 0) {
-          setTimeout(() => addBotMessage("Introduceți o valoare validă (ex: 12)"), 400);
-          return;
-        }
-        setFormData((p) => ({ ...p, cantitate: mc }));
-        setTimeout(() => {
-          addBotMessage("Doriți turnare cu pompă?", [
-            { label: "Cu pompă", value: "DA" },
-            { label: "Fără pompă", value: "NU" },
-          ]);
-          setStage("pompa");
-        }, 400);
-        break;
-      }
-
-      default:
-        break;
+    const nextIndex = currentStepIndex + 1;
+    if (nextIndex < config.steps.length) {
+      setTimeout(() => {
+        addBotMessage(config.steps[nextIndex].botMessage);
+        setCurrentStepIndex(nextIndex);
+      }, 400);
+    } else {
+      setTimeout(() => {
+        addBotMessage(config.pumpQuestion, config.pumpOptions);
+        setStage("pompa");
+      }, 400);
     }
   }
 
   function handleButtonClick(value: string) {
+    if (!config) return;
+
     if (stage === "pompa") {
-      addUserMessage(value === "DA" ? "Cu pompă" : "Fără pompă");
+      const label = config.pumpOptions.find((o) => o.value === value)?.label || value;
+      addUserMessage(label);
       setFormData((p) => ({ ...p, pompa: value }));
       setTimeout(() => {
         addBotMessage(
-          "Alegeți clasa de beton:",
-          CLASE_BETON.map((c) => ({ label: c, value: c }))
+          config.classQuestion,
+          config.concreteClasses.map((c) => ({ label: c, value: c }))
         );
         setStage("clasa");
       }, 400);
@@ -208,55 +160,70 @@ export default function PriceCalculator() {
       setStage("calculating");
 
       setTimeout(() => {
-        addBotMessage("Se calculează prețul...");
+        addBotMessage(config.calculatingMessage);
         calculatePrice(updatedData);
       }, 400);
     }
   }
 
-  async function calculatePrice(data: typeof formData) {
+  async function calculatePrice(data: Record<string, string>) {
+    if (!config) return;
     try {
+      const payload = {
+        name: data.name || "",
+        phone: data.phone || "",
+        email: data.email || "",
+        zona: data.zona || "",
+        strada: data.strada || "",
+        cantitate: parseFloat((data.cantitate || "0").replace(",", ".")),
+        pompa: data.pompa || "NU",
+        clasa: data.clasa || "",
+      };
+
       const response = await fetch("/api/calculator", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
 
       if (!result.success) {
         setStage("error");
-        addBotMessage(result.message || "A apărut o eroare. Încercați din nou.");
+        addBotMessage(result.message || config.errorMessage);
         setTimeout(() => {
-          addBotMessage("Doriți să reîncercați?", [
-            { label: "Da, reîncerc", value: "retry" },
-          ]);
+          addBotMessage("", [{ label: config.retryButtonLabel, value: "retry" }]);
         }, 500);
         return;
       }
 
       setStage("result");
-      addBotMessage(
-        `TOTAL cu TVA inclus: ${result.totalCuTVA} lei\n\n` +
-          `Detalii:\n` +
-          `• Beton ${data.clasa}: ${result.costBeton} lei (${result.pretMC} lei/mc × ${data.cantitate} mc)\n` +
-          `• Transport: ${result.costTransport} lei (${result.kmOneWay} km, ${result.drumuri} ${result.drumuri === 1 ? "transport" : "transporturi"})\n` +
-          `• Pompă: ${result.costPompa} lei\n` +
-          `• Total fără TVA: ${result.totalFaraTVA} lei\n\n` +
-          `Oferta a fost trimisă pe email la ${data.email}. Un agent vă va contacta în scurt timp!`
-      );
+
+      const resultText = config.resultTemplate
+        .replace("{totalCuTVA}", result.totalCuTVA)
+        .replace("{totalFaraTVA}", result.totalFaraTVA)
+        .replace("{costBeton}", result.costBeton)
+        .replace("{costPompa}", result.costPompa)
+        .replace("{costTransport}", result.costTransport)
+        .replace("{pretMC}", result.pretMC)
+        .replace("{cantitate}", data.cantitate || "0")
+        .replace("{clasa}", data.clasa || "")
+        .replace("{kmOneWay}", result.kmOneWay)
+        .replace("{drumuri}", result.drumuri)
+        .replace("{drumuriLabel}", result.drumuri === 1 ? "transport" : "transporturi")
+        .replace("{email}", data.email || "");
+
+      addBotMessage(resultText);
       setTimeout(() => {
-        addBotMessage("Doriți o altă ofertă?", [
-          { label: "Calculează din nou", value: "retry" },
+        addBotMessage(config.newCalcQuestion, [
+          { label: config.newCalcButtonLabel, value: "retry" },
         ]);
       }, 800);
     } catch {
       setStage("error");
-      addBotMessage("A apărut o eroare de conexiune. Încercați din nou.");
+      addBotMessage(config.connectionErrorMessage);
       setTimeout(() => {
-        addBotMessage("Doriți să reîncercați?", [
-          { label: "Da, reîncerc", value: "retry" },
-        ]);
+        addBotMessage("", [{ label: config.retryButtonLabel, value: "retry" }]);
       }, 500);
     }
   }
@@ -265,19 +232,17 @@ export default function PriceCalculator() {
     resetChat();
   }
 
-  const showInput = ["name", "phone", "email", "zona", "strada", "cantitate"].includes(stage);
+  const showInput = stage === "steps";
+  const currentStep = config?.steps[currentStepIndex];
 
-  function getPlaceholder(): string {
-    switch (stage) {
-      case "name": return "Numele dumneavoastră...";
-      case "phone": return "07xx xxx xxx";
-      case "email": return "email@exemplu.ro";
-      case "zona": return "Ex: Bragadiru, Clinceni...";
-      case "strada": return "Strada și numărul...";
-      case "cantitate": return "Ex: 12";
-      default: return "";
-    }
+  function getInputMode(): string {
+    if (!currentStep) return "text";
+    if (currentStep.inputType === "decimal") return "decimal";
+    if (currentStep.inputType === "tel") return "tel";
+    return "text";
   }
+
+  if (!config) return null;
 
   return (
     <>
@@ -288,7 +253,7 @@ export default function PriceCalculator() {
           data-testid="button-open-calculator"
         >
           <span className="bg-white shadow-lg rounded-full px-4 py-2 text-sm font-semibold text-[#2d7a50] border border-[#2d7a50]/20 opacity-90 group-hover:opacity-100 transition-opacity hidden sm:block">
-            Calculator Preț
+            {config.buttonLabel}
           </span>
           <div className="w-16 h-16 bg-[#2d7a50] rounded-full shadow-xl flex items-center justify-center hover:bg-[#246841] transition-colors hover:scale-105 transform duration-200">
             <Calculator className="w-7 h-7 text-white" />
@@ -304,12 +269,12 @@ export default function PriceCalculator() {
                 <Calculator className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-sm">Calculator Preț</h3>
-                <p className="text-xs text-white/80">Top Beton SRL</p>
+                <h3 className="font-bold text-sm">{config.headerTitle}</h3>
+                <p className="text-xs text-white/80">{config.headerSubtitle}</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {stage !== "welcome" && messages.length > 0 && (
+              {stage !== "idle" && messages.length > 0 && (
                 <button
                   onClick={resetChat}
                   className="p-2 hover:bg-white/20 rounded-full transition-colors"
@@ -373,7 +338,7 @@ export default function PriceCalculator() {
             <div ref={messagesEndRef} />
           </div>
 
-          {showInput && (
+          {showInput && currentStep && (
             <div className="p-3 bg-white border-t border-gray-200 flex-shrink-0">
               <form
                 onSubmit={(e) => {
@@ -384,11 +349,11 @@ export default function PriceCalculator() {
               >
                 <input
                   ref={inputRef}
-                  type={stage === "email" ? "email" : "text"}
-                  inputMode={stage === "cantitate" ? "decimal" : stage === "phone" ? "tel" : "text"}
+                  type={currentStep.inputType === "email" ? "email" : "text"}
+                  inputMode={getInputMode() as any}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder={getPlaceholder()}
+                  placeholder={currentStep.placeholder}
                   className="flex-1 border border-gray-300 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-[#2d7a50] focus:ring-1 focus:ring-[#2d7a50]"
                   data-testid="input-chat"
                 />

@@ -5,6 +5,19 @@ import { quoteRequestSchema } from "@shared/schema";
 import { sheetsService } from "./sheets";
 import { sendPriceQuoteEmails, type PriceQuoteEmail } from "./email";
 import { z } from "zod";
+import fs from "fs";
+import path from "path";
+
+const CHATBOT_CONFIG_PATH = path.resolve(import.meta.dirname, "chatbot-config.json");
+
+function readChatbotConfig() {
+  const raw = fs.readFileSync(CHATBOT_CONFIG_PATH, "utf-8");
+  return JSON.parse(raw);
+}
+
+function writeChatbotConfig(config: any) {
+  fs.writeFileSync(CHATBOT_CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
+}
 
 const STATION_ADDRESS = "Strada Barajului 7, Cornetu, Ilfov";
 
@@ -209,6 +222,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: false,
         message: 'A apărut o eroare la calcularea prețului',
       });
+    }
+  });
+
+  app.get("/api/chatbot-config", (_req, res) => {
+    try {
+      const config = readChatbotConfig();
+      res.json(config);
+    } catch (error) {
+      console.error("Error reading chatbot config:", error);
+      res.status(500).json({ error: "Failed to read config" });
+    }
+  });
+
+  app.post("/api/admin/login", (req, res) => {
+    const { password } = req.body;
+    if (password === process.env.ADMIN_PASSWORD) {
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ success: false, message: "Parolă incorectă" });
+    }
+  });
+
+  app.put("/api/chatbot-config", (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || authHeader !== `Bearer ${process.env.ADMIN_PASSWORD}`) {
+      return res.status(401).json({ error: "Neautorizat" });
+    }
+
+    try {
+      const config = req.body;
+      writeChatbotConfig(config);
+      res.json({ success: true, message: "Configurarea a fost salvată cu succes!" });
+    } catch (error) {
+      console.error("Error writing chatbot config:", error);
+      res.status(500).json({ error: "Failed to save config" });
     }
   });
 
