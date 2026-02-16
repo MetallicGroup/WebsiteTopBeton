@@ -14,14 +14,6 @@ run = ["npm", "run", "start"]
 localPort = 5000
 externalPort = 80
 
-[[ports]]
-localPort = 39057
-externalPort = 3000
-
-[[ports]]
-localPort = 45495
-externalPort = 3002
-
 [env]
 PORT = "5000"
 
@@ -48,3 +40,8 @@ waitForPort = 5000
 
 [agent]
 integrations = ["google-sheet:1.0.0", "resend:1.0.0"]
+
+[userenv]
+
+[userenv.shared]
+ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjRkODk2OGU4Y2JjZDQwNDI4Mzk1ZjIwOTU3NTJhNGFmIiwiaCI6Im11cm11cjY0In0="

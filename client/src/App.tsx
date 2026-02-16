@@ -17,6 +17,7 @@ import Parteneri from "@/pages/parteneri";
 import GalerieFoto from "@/pages/galerie-foto";
 import AriaDeAcoperire from "@/pages/aria-de-acoperire";
 import LocalitateSlug from "@/pages/localitate/[slug]";
+import PriceCalculator from "@/components/chatbot/price-calculator";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,6 +52,7 @@ export default function App() {
           </Switch>
         </main>
         <Footer />
+        <PriceCalculator />
         <Toaster />
       </div>
     </QueryClientProvider>
