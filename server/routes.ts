@@ -8,7 +8,7 @@ import { z } from "zod";
 import fs from "fs";
 import path from "path";
 
-const CHATBOT_CONFIG_PATH = path.resolve(import.meta.dirname, "chatbot-config.json");
+const CHATBOT_CONFIG_PATH = path.resolve(process.cwd(), "chatbot-config.json");
 
 function readChatbotConfig() {
   const raw = fs.readFileSync(CHATBOT_CONFIG_PATH, "utf-8");
