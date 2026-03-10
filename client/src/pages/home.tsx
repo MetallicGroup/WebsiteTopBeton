@@ -7,7 +7,7 @@ import { LOCALITATI } from "@/data/localitati";
 import RomaniaMap from "@/components/RomaniaMap";
 import irdProductCerts from "@assets/ird-certificates-products.png";
 import irdIsoCerts from "@assets/ird-certificates-iso.png";
-import heroImage from "@/assets/images/hero-concrete-truck.jpg";
+import heroImage from "@assets/PHOTO-2025-08-28-19-00-42_1773133181749.jpg";
 import aboutTeamImage from "@/assets/images/about-team.jpg";
 import blogPouringImage from "@/assets/images/blog-concrete-pouring.jpg";
 import blogTypesImage from "@/assets/images/blog-concrete-types.jpg";
