@@ -22,12 +22,12 @@ function writeChatbotConfig(config: any) {
 const STATION_ADDRESS = "Strada Barajului 7, Cornetu, Ilfov";
 
 const PRETURI_BETON: Record<string, number> = {
-  "C 8/10": 315,
-  "C 12/15": 325,
-  "C 16/20": 335,
-  "C 20/25": 350,
-  "C 25/30": 370,
-  "C 30/37": 390,
+  "C 8/10": 339,
+  "C 12/15": 348,
+  "C 16/20": 355,
+  "C 20/25": 380,
+  "C 25/30": 405,
+  "C 30/37": 435,
 };
 
 const calculatorSchema = z.object({
@@ -173,8 +173,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const drumuri = Math.ceil(data.cantitate / 9);
-      const kmTotal = kmOneWay * 2 * drumuri;
-      const kmFacturati = Math.max(0, kmTotal - 20);
+      const kmExtraPerCursa = Math.max(0, kmOneWay - 10);
+      const kmFacturati = kmExtraPerCursa * 2 * drumuri;
       const costTransport = kmFacturati * 15;
 
       const totalFaraTVA = costBeton + costPompa + costTransport;
